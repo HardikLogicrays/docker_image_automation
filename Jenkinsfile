@@ -1,48 +1,36 @@
 pipeline {
     agent any
 
-    stages{
-        stage("Build") {
-            steps {
-                sh 'docker build -t hardiklogicrays/docker_image_automation:latest .'
-//                 sh 'docker push hardiklogicrays/docker_image_automation:latest'
-                sh 'Image push on docker hub.'
+    stages {
+        stage("git pull"){
+            steps{
+                script{
+                    checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/HardikLogicrays/docker_image_automation']]])
+                }
+                echo "Pulling project successfully..."
             }
         }
-        
-        stage("Checkout") {
-            steps {
-                sh 'Process Complete...'
+        stage("Build image"){
+            steps{
+                script{
+                    sh 'docker build -t hardiklogicrays/docker_image_automation .'
+                    echo 'Image build successfully...'
+                }
+                
+            }
+        }
+        stage("Push image"){
+            steps{
+                script{
+                   withCredentials([string(credentialsId: 'docker_hub_password', variable: 'docker_hub_password')]) {
+                   sh 'docker login -u hardiklogicrays -p ${docker_hub_password}'
+}
+                   echo 'Docker login successfully...'
+                   
+                   sh 'docker push hardiklogicrays/docker_image_automation'
+                   echo 'Docker image push successfully...'
+                }
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// node('slave-node') {
-//     checkout scm
-//     stage ('Building Image')
-//     docker.withRegistry('https://registry.hub.docker.com', 'docker_hub_credentials') {
-//         def customImage = docker.build("hardiklogicrays/docker_image_automation:latest")
-
-//         customImage.push()
-//     }
-
-//     stage ('Deploy') {
-//         sh '''docker run --name devops hardiklogicrays/docker_image_automation:latest'''
-//     }
-// }
