@@ -3,15 +3,15 @@ pipeline {
 
     stages{
         stage("Build") {
-            step {
+            steps {
                 sh 'docker build -t hardiklogicrays/docker_image_automation:latest .'
-                sh 'docker push hardiklogicrays/docker_image_automation:latest'
+//                 sh 'docker push hardiklogicrays/docker_image_automation:latest'
                 sh 'Image push on docker hub.'
             }
         }
         
         stage("Checkout") {
-            step {
+            steps {
                 sh 'Process Complete...'
             }
         }
