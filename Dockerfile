@@ -1,5 +1,6 @@
-FROM centos
+FROM alpine
 
-RUN yum -y install httpd
 
-CMD echo "Hello World...!!!"
+# CMD echo "Hello World...!!!"
+RUN echo "Hello There..."
+RUN echo "This is a my first docker automation script...!!!"
